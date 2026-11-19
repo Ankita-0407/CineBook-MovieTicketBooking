@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Book Tickets - CineBook</title>
+  <link rel="stylesheet" href="css/style.css"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+</head>
+<body>
+  <nav class="navbar" id="navbar">
+    <div class="nav-brand"><i class="fas fa-film"></i> CineBook</div>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="movies.html">Movies</a></li>
+      <li><a href="booking.html" class="active">Book Tickets</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+    <div class="nav-actions">
+      <span id="userGreeting" class="user-greeting" style="display:none"></span>
+      <button class="btn btn-login" id="loginBtn" onclick="openLoginModal()">Login</button>
+      <button class="btn btn-logout" id="logoutBtn" style="display:none" onclick="logout()">Logout</button>
+    </div>
+    <div class="hamburger" id="hamburger" onclick="toggleMenu()"><span></span><span></span><span></span></div>
+  </nav>
+
+  <div class="page-banner">
+    <h1>Book Your Tickets</h1>
+    <p>Select movie, show & seats — it's that easy!</p>
+  </div>
+
+  <section class="section">
+    <div class="container">
+
+      <!-- STEP INDICATOR -->
+      <div class="steps-bar">
+        <div class="step active" id="step1Ind"><span>1</span> Movie &amp; Show</div>
+        <div class="step-line"></div>
+        <div class="step" id="step2Ind"><span>2</span> Select Seats</div>
+        <div class="step-line"></div>
+        <div class="step" id="step3Ind"><span>3</span> Payment</div>
+        <div class="step-line"></div>
+        <div class="step" id="step4Ind"><span>4</span> Confirmation</div>
+      </div>
+
+      <!-- STEP 1: Choose Movie & Show -->
+      <div id="step1" class="booking-step">
+        <h2 class="step-heading">Step 1: Choose Movie &amp; Show</h2>
+        <div class="form-group">
+          <label for="movieSelect">Select Movie</label>
+          <select id="movieSelect" class="filter-select" onchange="onMovieChange()">
+            <option value="">-- Choose a Movie --</option>
+          </select>
+        </div>
+        <div class="form-group" id="cinemaGroup" style="display:none">
+          <label for="cinemaSelect">Select Cinema</label>
+          <select id="cinemaSelect" class="filter-select" onchange="onCinemaChange()">
+            <option value="">-- Choose Cinema --</option>
+          </select>
+        </div>
+        <div class="form-group" id="dateGroup" style="display:none">
+          <label for="dateSelect">Select Date</label>
+          <select id="dateSelect" class="filter-select" onchange="onDateChange()">
+            <option value="">-- Choose Date --</option>
+          </select>
+        </div>
+        <div id="showTimesContainer" style="display:none">
+          <label>Select Show Time</label>
+          <div class="showtime-grid" id="showTimeGrid"></div>
+        </div>
+        <div class="step-nav">
+          <button class="btn btn-primary" onclick="goToStep2()" id="toStep2Btn" disabled>Next: Select Seats &rarr;</button>
+        </div>
+      </div>
+
+      <!-- STEP 2: Seat Selection -->
+      <div id="step2" class="booking-step" style="display:none">
+        <h2 class="step-heading">Step 2: Select Your Seats</h2>
+        <div class="booking-layout">
+          <div class="seat-section">
+            <div class="screen-label"><i class="fas fa-tv"></i> SCREEN</div>
+            <div class="seat-legend">
+              <span class="legend-item"><span class="seat legend-available"></span> Available</span>
+              <span class="legend-item"><span class="seat legend-selected"></span> Selected</span>
+              <span class="legend-item"><span class="seat legend-booked"></span> Booked</span>
+              <span class="legend-item"><span class="seat legend-premium"></span> Premium</span>
+            </div>
+            <div id="seatMap" class="seat-map"></div>
+          </div>
+          <div class="booking-summary-panel">
+            <h3>Booking Summary</h3>
+            <div class="summary-info" id="summaryInfo"></div>
+            <div class="summary-seats" id="summarySeats">
+              <p>No seats selected yet.</p>
+            </div>
+            <div class="summary-total" id="summaryTotal"></div>
+          </div>
+        </div>
+        <div class="step-nav">
+          <button class="btn btn-secondary" onclick="goToStep(1)">&larr; Back</button>
+          <button class="btn btn-primary" onclick="goToStep3()" id="toStep3Btn" disabled>Next: Payment &rarr;</button>
+        </div>
+      </div>
+
+      <!-- STEP 3: Payment -->
+      <div id="step3" class="booking-step" style="display:none">
+        <h2 class="step-heading">Step 3: Payment Details</h2>
+        <div class="payment-layout">
+          <div class="payment-form-wrap">
+            <div class="payment-methods">
+              <label class="pay-method" id="pm-card">
+                <input type="radio" name="payMethod" value="card" checked onchange="showPaymentForm('card')"/>
+                <i class="fas fa-credit-card"></i> Credit / Debit Card
+              </label>
+              <label class="pay-method" id="pm-upi">
+                <input type="radio" name="payMethod" value="upi" onchange="showPaymentForm('upi')"/>
+                <i class="fas fa-mobile-alt"></i> UPI
+              </label>
+              <label class="pay-method" id="pm-wallet">
+                <input type="radio" name="payMethod" value="wallet" onchange="showPaymentForm('wallet')"/>
+                <i class="fas fa-wallet"></i> Wallet
+              </label>
+            </div>
+
+            <!-- Card Form -->
+            <form id="cardForm" class="pay-form" onsubmit="processPayment(event)">
+              <div class="form-group">
+                <label>Card Number</label>
+                <input type="text" id="cardNumber" maxlength="19" placeholder="1234 5678 9012 3456" oninput="formatCard(this)" required/>
+                <span class="error-msg" id="cardNumErr"></span>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Expiry (MM/YY)</label>
+                  <input type="text" id="cardExpiry" maxlength="5" placeholder="MM/YY" oninput="formatExpiry(this)" required/>
+                  <span class="error-msg" id="cardExpErr"></span>
+                </div>
+                <div class="form-group">
+                  <label>CVV</label>
+                  <input type="password" id="cardCVV" maxlength="3" placeholder="CVV" required/>
+                  <span class="error-msg" id="cardCVVErr"></span>
+                </div>
+              </div>
+              <div class="form-group">
+                <label>Cardholder Name</label>
+                <input type="text" id="cardName" placeholder="Name on card" required/>
+              </div>
+              <div class="pay-total-banner" id="payTotalBanner"></div>
+              <button type="submit" class="btn btn-primary btn-block">Pay Now &amp; Confirm Booking</button>
+            </form>
+
+            <!-- UPI Form -->
+            <form id="upiForm" class="pay-form" style="display:none" onsubmit="processPayment(event)">
+              <div class="form-group">
+                <label>UPI ID</label>
+                <input type="text" id="upiId" placeholder="yourname@bank" required/>
+                <span class="error-msg" id="upiIdErr"></span>
+              </div>
+              <div class="pay-total-banner" id="payTotalBanner2"></div>
+              <button type="submit" class="btn btn-primary btn-block">Pay via UPI</button>
+            </form>
+
+            <!-- Wallet Form -->
+            <form id="walletForm" class="pay-form" style="display:none" onsubmit="processPayment(event)">
+              <div class="form-group">
+                <label>Select Wallet</label>
+                <select id="walletChoice" class="filter-select">
+                  <option value="paytm">Paytm</option>
+                  <option value="phonepe">PhonePe</option>
+                  <option value="gpay">Google Pay</option>
+                  <option value="amazon">Amazon Pay</option>
+                </select>
+              </div>
+              <div class="pay-total-banner" id="payTotalBanner3"></div>
+              <button type="submit" class="btn btn-primary btn-block">Pay via Wallet</button>
+            </form>
+          </div>
+
+          <div class="order-summary-side">
+            <h3>Order Summary</h3>
+            <div id="orderSummaryContent"></div>
+          </div>
+        </div>
+        <div class="step-nav">
+          <button class="btn btn-secondary" onclick="goToStep(2)">&larr; Back</button>
+        </div>
+      </div>
+
+      <!-- STEP 4: Confirmation -->
+      <div id="step4" class="booking-step" style="display:none">
+        <div class="confirm-wrap">
+          <div class="confirm-icon"><i class="fas fa-check-circle"></i></div>
+          <h2>Booking Confirmed! 🎉</h2>
+          <p class="confirm-sub">Your e-ticket is ready. Enjoy the show!</p>
+          <div class="ticket-card" id="ticketCard"></div>
+          <div class="confirm-actions">
+            <button class="btn btn-primary" onclick="printTicket()"><i class="fas fa-print"></i> Print Ticket</button>
+            <button class="btn btn-secondary" onclick="newBooking()"><i class="fas fa-plus"></i> Book Another</button>
+            <a href="index.html" class="btn btn-outline"><i class="fas fa-home"></i> Home</a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Login Modal -->
+  <div class="modal-overlay" id="loginModal">
+    <div class="modal">
+      <button class="modal-close" onclick="closeLoginModal()">&times;</button>
+      <div class="modal-tabs">
+        <button class="tab-btn active" id="loginTabBtn" onclick="switchTab('login')">Login</button>
+        <button class="tab-btn" id="registerTabBtn" onclick="switchTab('register')">Register</button>
+      </div>
+      <form id="loginForm" class="modal-form" onsubmit="handleLogin(event)">
+        <h2>Login to Continue</h2>
+        <div class="form-group"><label>Email</label><input type="email" id="loginEmail" placeholder="Your email" required/><span class="error-msg" id="loginEmailErr"></span></div>
+        <div class="form-group"><label>Password</label><div class="password-wrapper"><input type="password" id="loginPassword" placeholder="Password" required/><i class="fas fa-eye toggle-pwd" onclick="togglePwd('loginPassword',this)"></i></div><span class="error-msg" id="loginPassErr"></span></div>
+        <button type="submit" class="btn btn-primary btn-block">Login</button>
+        <p class="form-hint">Demo: any email & password (min 6 chars)</p>
+      </form>
+      <form id="registerForm" class="modal-form" style="display:none" onsubmit="handleRegister(event)">
+        <h2>Create Account</h2>
+        <div class="form-group"><label>Full Name</label><input type="text" id="regName" required/><span class="error-msg" id="regNameErr"></span></div>
+        <div class="form-group"><label>Email</label><input type="email" id="regEmail" required/><span class="error-msg" id="regEmailErr"></span></div>
+        <div class="form-group"><label>Phone</label><input type="tel" id="regPhone" required/><span class="error-msg" id="regPhoneErr"></span></div>
+        <div class="form-group"><label>Password</label><div class="password-wrapper"><input type="password" id="regPassword" required/><i class="fas fa-eye toggle-pwd" onclick="togglePwd('regPassword',this)"></i></div><span class="error-msg" id="regPassErr"></span></div>
+        <button type="submit" class="btn btn-primary btn-block">Register</button>
+      </form>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="footer-bottom"><p>&copy; 2026 CineBook. All rights reserved.</p></div>
+  </footer>
+
+  <script src="js/data.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/booking.js"></script>
+</body>
+</html>

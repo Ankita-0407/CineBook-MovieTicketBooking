@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CineBook - Movie Ticket Booking</title>
+  <link rel="stylesheet" href="css/style.css"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-brand">
+      <i class="fas fa-film"></i> CineBook
+    </div>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html" class="active">Home</a></li>
+      <li><a href="movies.html">Movies</a></li>
+      <li><a href="booking.html">Book Tickets</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+    <div class="nav-actions">
+      <span id="userGreeting" class="user-greeting" style="display:none"></span>
+      <button class="btn btn-login" id="loginBtn" onclick="openLoginModal()">Login</button>
+      <button class="btn btn-logout" id="logoutBtn" style="display:none" onclick="logout()">Logout</button>
+    </div>
+    <div class="hamburger" id="hamburger" onclick="toggleMenu()">
+      <span></span><span></span><span></span>
+    </div>
+  </nav>
+
+  <!-- HERO SECTION -->
+  <section class="hero" id="home">
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+      <h1>Book Your Movie Experience</h1>
+      <p>Find the latest movies, pick your seat, and enjoy the show!</p>
+      <a href="movies.html" class="btn btn-primary btn-large">Browse Movies</a>
+    </div>
+    <div class="hero-scroll"><i class="fas fa-chevron-down"></i></div>
+  </section>
+
+  <!-- NOW SHOWING -->
+  <section class="section" id="nowShowing">
+    <div class="container">
+      <h2 class="section-title">Now Showing</h2>
+      <div class="movie-grid" id="movieGrid">
+        <!-- JS will render cards here -->
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURES -->
+  <section class="features-section">
+    <div class="container">
+      <h2 class="section-title">Why CineBook?</h2>
+      <div class="features-grid">
+        <div class="feature-card">
+          <i class="fas fa-couch"></i>
+          <h3>Choose Your Seat</h3>
+          <p>Pick exactly where you want to sit with our interactive seat map.</p>
+        </div>
+        <div class="feature-card">
+          <i class="fas fa-shield-alt"></i>
+          <h3>Secure Booking</h3>
+          <p>All transactions are safe and your data is protected.</p>
+        </div>
+        <div class="feature-card">
+          <i class="fas fa-ticket-alt"></i>
+          <h3>Instant Ticket</h3>
+          <p>Get your e-ticket immediately after booking.</p>
+        </div>
+        <div class="feature-card">
+          <i class="fas fa-mobile-alt"></i>
+          <h3>Mobile Friendly</h3>
+          <p>Book from any device — phone, tablet, or laptop.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="container footer-grid">
+      <div>
+        <h3><i class="fas fa-film"></i> CineBook</h3>
+        <p>Your one-stop movie ticket booking platform.</p>
+        <p>Made with ❤️ by a First Year CSE Student</p>
+      </div>
+      <div>
+        <h4>Quick Links</h4>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="movies.html">Movies</a></li>
+          <li><a href="booking.html">Book Tickets</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Follow Us</h4>
+        <div class="social-icons">
+          <a href="#"><i class="fab fa-facebook"></i></a>
+          <a href="#"><i class="fab fa-twitter"></i></a>
+          <a href="#"><i class="fab fa-instagram"></i></a>
+          <a href="#"><i class="fab fa-youtube"></i></a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2026 CineBook. All rights reserved. | <a href="#">Privacy Policy</a></p>
+    </div>
+  </footer>
+
+  <!-- LOGIN MODAL -->
+  <div class="modal-overlay" id="loginModal">
+    <div class="modal">
+      <button class="modal-close" onclick="closeLoginModal()">&times;</button>
+      <div class="modal-tabs">
+        <button class="tab-btn active" id="loginTabBtn" onclick="switchTab('login')">Login</button>
+        <button class="tab-btn" id="registerTabBtn" onclick="switchTab('register')">Register</button>
+      </div>
+
+      <!-- Login Form -->
+      <form id="loginForm" class="modal-form" onsubmit="handleLogin(event)">
+        <h2>Welcome Back!</h2>
+        <div class="form-group">
+          <label for="loginEmail">Email</label>
+          <input type="email" id="loginEmail" placeholder="Enter your email" required/>
+          <span class="error-msg" id="loginEmailErr"></span>
+        </div>
+        <div class="form-group">
+          <label for="loginPassword">Password</label>
+          <div class="password-wrapper">
+            <input type="password" id="loginPassword" placeholder="Enter password" required/>
+            <i class="fas fa-eye toggle-pwd" onclick="togglePwd('loginPassword', this)"></i>
+          </div>
+          <span class="error-msg" id="loginPassErr"></span>
+        </div>
+        <button type="submit" class="btn btn-primary btn-block">Login</button>
+        <p class="form-hint">Demo: use any email & password (min 6 chars)</p>
+      </form>
+
+      <!-- Register Form -->
+      <form id="registerForm" class="modal-form" style="display:none" onsubmit="handleRegister(event)">
+        <h2>Create Account</h2>
+        <div class="form-group">
+          <label for="regName">Full Name</label>
+          <input type="text" id="regName" placeholder="Your full name" required/>
+          <span class="error-msg" id="regNameErr"></span>
+        </div>
+        <div class="form-group">
+          <label for="regEmail">Email</label>
+          <input type="email" id="regEmail" placeholder="Your email" required/>
+          <span class="error-msg" id="regEmailErr"></span>
+        </div>
+        <div class="form-group">
+          <label for="regPhone">Phone Number</label>
+          <input type="tel" id="regPhone" placeholder="10-digit phone number" required/>
+          <span class="error-msg" id="regPhoneErr"></span>
+        </div>
+        <div class="form-group">
+          <label for="regPassword">Password</label>
+          <div class="password-wrapper">
+            <input type="password" id="regPassword" placeholder="Min 6 characters" required/>
+            <i class="fas fa-eye toggle-pwd" onclick="togglePwd('regPassword', this)"></i>
+          </div>
+          <span class="error-msg" id="regPassErr"></span>
+        </div>
+        <button type="submit" class="btn btn-primary btn-block">Register</button>
+      </form>
+    </div>
+  </div>
+
+  <script src="js/data.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

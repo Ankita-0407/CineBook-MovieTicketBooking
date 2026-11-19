@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Movies - CineBook</title>
+  <link rel="stylesheet" href="css/style.css"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+</head>
+<body>
+  <nav class="navbar" id="navbar">
+    <div class="nav-brand"><i class="fas fa-film"></i> CineBook</div>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="movies.html" class="active">Movies</a></li>
+      <li><a href="booking.html">Book Tickets</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+    <div class="nav-actions">
+      <span id="userGreeting" class="user-greeting" style="display:none"></span>
+      <button class="btn btn-login" id="loginBtn" onclick="openLoginModal()">Login</button>
+      <button class="btn btn-logout" id="logoutBtn" style="display:none" onclick="logout()">Logout</button>
+    </div>
+    <div class="hamburger" id="hamburger" onclick="toggleMenu()"><span></span><span></span><span></span></div>
+  </nav>
+
+  <div class="page-banner">
+    <h1>All Movies</h1>
+    <p>Pick your favourite and book now!</p>
+  </div>
+
+  <section class="section">
+    <div class="container">
+      <!-- Search & Filter Bar -->
+      <div class="filter-bar">
+        <input type="text" id="searchInput" placeholder="Search movies..." class="search-box" oninput="filterMovies()"/>
+        <select id="genreFilter" class="filter-select" onchange="filterMovies()">
+          <option value="">All Genres</option>
+          <option value="Action">Action</option>
+          <option value="Comedy">Comedy</option>
+          <option value="Drama">Drama</option>
+          <option value="Thriller">Thriller</option>
+          <option value="Sci-Fi">Sci-Fi</option>
+          <option value="Horror">Horror</option>
+        </select>
+        <select id="langFilter" class="filter-select" onchange="filterMovies()">
+          <option value="">All Languages</option>
+          <option value="English">English</option>
+          <option value="Hindi">Hindi</option>
+          <option value="Tamil">Tamil</option>
+        </select>
+      </div>
+      <div class="movie-grid" id="allMoviesGrid"></div>
+      <p id="noResults" style="display:none;text-align:center;color:#aaa;margin-top:2rem;">No movies found. Try a different search!</p>
+    </div>
+  </section>
+
+  <!-- Movie Detail Modal -->
+  <div class="modal-overlay" id="movieModal">
+    <div class="modal modal-wide">
+      <button class="modal-close" onclick="closeMovieModal()">&times;</button>
+      <div id="movieModalContent"></div>
+    </div>
+  </div>
+
+  <!-- Login Modal (reused) -->
+  <div class="modal-overlay" id="loginModal">
+    <div class="modal">
+      <button class="modal-close" onclick="closeLoginModal()">&times;</button>
+      <div class="modal-tabs">
+        <button class="tab-btn active" id="loginTabBtn" onclick="switchTab('login')">Login</button>
+        <button class="tab-btn" id="registerTabBtn" onclick="switchTab('register')">Register</button>
+      </div>
+      <form id="loginForm" class="modal-form" onsubmit="handleLogin(event)">
+        <h2>Welcome Back!</h2>
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" id="loginEmail" placeholder="Enter your email" required/>
+          <span class="error-msg" id="loginEmailErr"></span>
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <div class="password-wrapper">
+            <input type="password" id="loginPassword" placeholder="Enter password" required/>
+            <i class="fas fa-eye toggle-pwd" onclick="togglePwd('loginPassword',this)"></i>
+          </div>
+          <span class="error-msg" id="loginPassErr"></span>
+        </div>
+        <button type="submit" class="btn btn-primary btn-block">Login</button>
+        <p class="form-hint">Demo: use any email & password (min 6 chars)</p>
+      </form>
+      <form id="registerForm" class="modal-form" style="display:none" onsubmit="handleRegister(event)">
+        <h2>Create Account</h2>
+        <div class="form-group"><label>Full Name</label><input type="text" id="regName" placeholder="Your full name" required/><span class="error-msg" id="regNameErr"></span></div>
+        <div class="form-group"><label>Email</label><input type="email" id="regEmail" placeholder="Your email" required/><span class="error-msg" id="regEmailErr"></span></div>
+        <div class="form-group"><label>Phone</label><input type="tel" id="regPhone" placeholder="10-digit phone" required/><span class="error-msg" id="regPhoneErr"></span></div>
+        <div class="form-group"><label>Password</label><div class="password-wrapper"><input type="password" id="regPassword" placeholder="Min 6 characters" required/><i class="fas fa-eye toggle-pwd" onclick="togglePwd('regPassword',this)"></i></div><span class="error-msg" id="regPassErr"></span></div>
+        <button type="submit" class="btn btn-primary btn-block">Register</button>
+      </form>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="footer-bottom"><p>&copy; 2026 CineBook. All rights reserved.</p></div>
+  </footer>
+
+  <script src="js/data.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/movies.js"></script>
+</body>
+</html>
